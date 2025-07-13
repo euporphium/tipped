@@ -4,16 +4,20 @@ import { revalidatePath } from 'next/cache';
 import { shiftsRepository } from '@/db/shiftsRepository';
 import { Shift_Insert } from '@/db/schema';
 
-export async function addShift(shiftData: Shift_Insert) {
+export async function updateShift(id: number, shiftData: Shift_Insert) {
   try {
-    const newShift = await shiftsRepository.create(shiftData);
+    const updatedShift = await shiftsRepository.update(id, shiftData);
+
+    if (!updatedShift) {
+      return { success: false, error: 'Shift not found' };
+    }
 
     // Revalidate the page to refresh the data
     revalidatePath('/shifts');
 
-    return { success: true, data: newShift };
+    return { success: true, data: updatedShift };
   } catch (error) {
-    console.error('Error adding shift:', error);
+    console.error('Error updating shift:', error);
     return { success: false, error: 'Internal server error' };
   }
 }

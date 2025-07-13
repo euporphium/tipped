@@ -15,7 +15,7 @@ export async function deleteShift(id: number) {
       return { success: false, error: 'Shift not found' };
     }
 
-    // Revalidate the shifts page to refresh the data
+    // Revalidate the page to refresh the data
     revalidatePath('/shifts');
 
     return { success: true };

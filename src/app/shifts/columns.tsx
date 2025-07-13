@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DeleteShiftDialog } from '@/components/delete-shift-dialog';
+import { EditShiftDialog } from '@/components/edit-shift-dialog';
 import { Shift } from '@/db/schema';
 
 // Separate component to manage dropdown state
@@ -36,14 +37,15 @@ function ActionsCell({ shift }: { shift: Shift }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Shift Actions</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(shift.id.toString())}
-        >
-          Copy shift ID
-        </DropdownMenuItem>
+        {/*<DropdownMenuItem*/}
+        {/*  onClick={() => navigator.clipboard.writeText(shift.id.toString())}*/}
+        {/*>*/}
+        {/*  Copy shift ID*/}
+        {/*</DropdownMenuItem>*/}
         <DropdownMenuItem onClick={() => router.push(`/shifts/${shift.id}`)}>
           View shift details
         </DropdownMenuItem>
+        <EditShiftDialog shift={shift} onEditSuccess={handleDeleteSuccess} />
         <DropdownMenuSeparator />
         <DeleteShiftDialog
           shift={shift}

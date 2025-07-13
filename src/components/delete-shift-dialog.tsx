@@ -53,6 +53,7 @@ export function DeleteShiftDialog({
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <DropdownMenuItem
+          className="text-destructive"
           onSelect={(e) => {
             e.preventDefault();
           }}

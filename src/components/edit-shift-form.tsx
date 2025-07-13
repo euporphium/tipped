@@ -13,27 +13,30 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DatePicker } from '@/components/date-picker';
-import { Shift_Insert } from '@/db/schema';
+import { Shift_Insert, Shift } from '@/db/schema';
 import {
   shiftFormSchema,
   combineDateAndTime,
+  extractTimeString,
   type ShiftForm,
 } from '@/lib/validations';
 
-export const AddShiftForm = ({
-  onAddShift,
+export const EditShiftForm = ({
+  shift,
+  onUpdateShift,
   isSubmitting = false,
 }: {
-  onAddShift: (shift: Shift_Insert) => void;
+  shift: Shift;
+  onUpdateShift: (shift: Shift_Insert) => void;
   isSubmitting?: boolean;
 }) => {
   const form = useForm<ShiftForm>({
     defaultValues: {
-      shiftStart: new Date(),
-      shiftEnd: new Date(),
-      shiftStartTime: '09:00',
-      shiftEndTime: new Date().toTimeString().slice(0, 5),
-      tips: undefined,
+      shiftStart: shift.shiftStart,
+      shiftEnd: shift.shiftEnd,
+      shiftStartTime: extractTimeString(shift.shiftStart),
+      shiftEndTime: extractTimeString(shift.shiftEnd),
+      tips: shift.tips,
     },
     resolver: zodResolver(shiftFormSchema),
   });
@@ -49,7 +52,7 @@ export const AddShiftForm = ({
       shiftEnd: endDate,
       tips: data.tips,
     };
-    onAddShift(shiftData);
+    onUpdateShift(shiftData);
   };
 
   return (
@@ -167,7 +170,7 @@ export const AddShiftForm = ({
         />
 
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving...' : 'Save Shift'}
+          {isSubmitting ? 'Updating...' : 'Update Shift'}
         </Button>
       </form>
     </Form>
