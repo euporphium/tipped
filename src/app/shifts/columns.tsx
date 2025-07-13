@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { DeleteShiftDialog } from '@/components/delete-shift-dialog';
 import { Shift } from '@/db/schema';
 
 export const columns: ColumnDef<Shift>[] = [
@@ -52,7 +53,7 @@ export const columns: ColumnDef<Shift>[] = [
       const start = row.original.shiftStart;
       const end = row.original.shiftEnd;
       const hours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
-      return `${hours.toFixed(1)}h`;
+      return `${hours.toFixed(1)} hours`;
     },
   },
   {
@@ -60,7 +61,7 @@ export const columns: ColumnDef<Shift>[] = [
     header: 'Tips',
     cell: ({ row }) => {
       return (
-        <div className="flex justify-between font-mono">
+        <div className="flex justify-between font-mono max-w-[6ch]">
           <span>$</span>
           <span>{row.original.tips}</span>
         </div>
@@ -94,7 +95,7 @@ export const columns: ColumnDef<Shift>[] = [
               View shift details
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Delete shift</DropdownMenuItem>
+            <DeleteShiftDialog shift={shift} />
           </DropdownMenuContent>
         </DropdownMenu>
       );

@@ -1,7 +1,6 @@
 import { Shift } from '@/db/schema';
 import { columns } from './columns';
 import { DataTable } from './data-table';
-import { decemberShifts } from './mock';
 import { shiftsRepository } from '@/db';
 
 async function getData(): Promise<Shift[]> {
@@ -14,7 +13,9 @@ export default async function DemoPage() {
 
   return (
     <div className="container mx-auto p-2">
-      <DataTable columns={columns} data={data} />
+      <div className="max-w-2xl mx-auto">
+        <DataTable columns={columns} data={data} />
+      </div>
     </div>
   );
 }
