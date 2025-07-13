@@ -1,7 +1,15 @@
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+
 export default function Home() {
   return (
     <div>
-      <h1>Hello World</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <h1>Tipped</h1>
+          </CardTitle>
+        </CardHeader>
+      </Card>
     </div>
   );
 }
