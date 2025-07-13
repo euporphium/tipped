@@ -2,9 +2,11 @@ import { Shift } from '@/db/schema';
 import { columns } from './columns';
 import { DataTable } from './data-table';
 import { decemberShifts } from './mock';
+import { shiftsRepository } from '@/db';
 
 async function getData(): Promise<Shift[]> {
-  return Promise.resolve(decemberShifts);
+  const shifts = await shiftsRepository.findAll();
+  return shifts;
 }
 
 export default async function DemoPage() {

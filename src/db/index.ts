@@ -1,6 +1,7 @@
-import { drizzle } from "drizzle-orm/mysql2";
-import { env } from "@/env";
+import { drizzle } from 'drizzle-orm/mysql2';
+import { env } from '@/env';
 
 const db = drizzle(env.DATABASE_URL);
 
 export { db };
+export { shiftsRepository } from './shiftsRepository';
