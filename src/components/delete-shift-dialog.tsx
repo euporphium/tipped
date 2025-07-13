@@ -3,15 +3,7 @@
 import { useState } from 'react';
 import { deleteShift } from '@/app/shifts/actions';
 
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,9 +19,13 @@ import { Shift } from '@/db/schema';
 
 interface DeleteShiftDialogProps {
   shift: Shift;
+  onDeleteSuccess?: () => void;
 }
 
-export function DeleteShiftDialog({ shift }: DeleteShiftDialogProps) {
+export function DeleteShiftDialog({
+  shift,
+  onDeleteSuccess,
+}: DeleteShiftDialogProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -38,6 +34,8 @@ export function DeleteShiftDialog({ shift }: DeleteShiftDialogProps) {
       const result = await deleteShift(shift.id);
 
       if (result.success) {
+        // Call the callback to close the parent dropdown
+        onDeleteSuccess?.();
         // The page will automatically refresh due to revalidatePath
       } else {
         console.error('Failed to delete shift:', result.error);
@@ -54,7 +52,11 @@ export function DeleteShiftDialog({ shift }: DeleteShiftDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+        <DropdownMenuItem
+          onSelect={(e) => {
+            e.preventDefault();
+          }}
+        >
           Delete shift
         </DropdownMenuItem>
       </AlertDialogTrigger>

@@ -3,6 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -15,6 +16,43 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { DeleteShiftDialog } from '@/components/delete-shift-dialog';
 import { Shift } from '@/db/schema';
+
+// Separate component to manage dropdown state
+function ActionsCell({ shift }: { shift: Shift }) {
+  const router = useRouter();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleDeleteSuccess = () => {
+    setIsDropdownOpen(false);
+  };
+
+  return (
+    <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Shift Actions</DropdownMenuLabel>
+        <DropdownMenuItem
+          onClick={() => navigator.clipboard.writeText(shift.id.toString())}
+        >
+          Copy shift ID
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push(`/shifts/${shift.id}`)}>
+          View shift details
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DeleteShiftDialog
+          shift={shift}
+          onDeleteSuccess={handleDeleteSuccess}
+        />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export const columns: ColumnDef<Shift>[] = [
   {
@@ -71,34 +109,7 @@ export const columns: ColumnDef<Shift>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const shift = row.original;
-      const router = useRouter();
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Shift Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(shift.id.toString())}
-            >
-              Copy shift ID
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => router.push(`/shifts/${shift.id}`)}
-            >
-              View shift details
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DeleteShiftDialog shift={shift} />
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <ActionsCell shift={row.original} />;
     },
   },
 ];
