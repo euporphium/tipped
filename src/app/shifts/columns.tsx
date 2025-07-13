@@ -2,6 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -70,6 +71,7 @@ export const columns: ColumnDef<Shift>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const shift = row.original;
+      const router = useRouter();
 
       return (
         <DropdownMenu>
@@ -86,7 +88,11 @@ export const columns: ColumnDef<Shift>[] = [
             >
               Copy shift ID
             </DropdownMenuItem>
-            <DropdownMenuItem>View shift details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => router.push(`/shifts/${shift.id}`)}
+            >
+              View shift details
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Delete shift</DropdownMenuItem>
           </DropdownMenuContent>
