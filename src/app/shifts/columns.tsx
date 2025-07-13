@@ -1,12 +1,34 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Shift } from '@/db/schema';
 
 export const columns: ColumnDef<Shift>[] = [
   {
     accessorKey: 'shiftStart',
-    header: 'Date',
+    sortingFn: 'datetime',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Date
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const start = row.original.shiftStart;
       const end = row.original.shiftEnd;
@@ -41,6 +63,34 @@ export const columns: ColumnDef<Shift>[] = [
           <span>$</span>
           <span>{row.original.tips}</span>
         </div>
+      );
+    },
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      const shift = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Shift Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(shift.id.toString())}
+            >
+              Copy shift ID
+            </DropdownMenuItem>
+            <DropdownMenuItem>View shift details</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Delete shift</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },
