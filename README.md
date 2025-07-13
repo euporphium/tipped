@@ -1,8 +1,23 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment Setup
+
+This project uses [T3 Env](https://env.t3.gg/) for type-safe environment variable validation. Create a `.env` file in the root directory with the following variables:
+
+```bash
+# Database
+DATABASE_URL="mysql://user:password@localhost:3306/database_name"
+
+# Environment
+NODE_ENV="development"
+
+# Optional: Skip environment validation (for CI/CD)
+# SKIP_ENV_VALIDATION="true"
+```
+
 ## Getting Started
 
-First, run the development server:
+First, set up your environment variables as described above, then run the development server:
 
 ```bash
 npm run dev

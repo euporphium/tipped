@@ -2,11 +2,8 @@ services:
   db:
     image: mysql:${MYSQL_VERSION:-9.3}
     restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-tipped}
-      MYSQL_USER: ${MYSQL_USER:-tipped_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-tipped_password}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-tipped_root_password}
+    env_file:
+      - .env.docker
     ports:
       - "${MYSQL_PORT:-3306}:3306"
     volumes:
