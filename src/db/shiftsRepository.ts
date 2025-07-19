@@ -1,4 +1,4 @@
-import { eq, desc, asc, and, gte, lte } from 'drizzle-orm';
+import { eq, desc, asc, and, gte, lte, sum, avg, min, max } from 'drizzle-orm';
 import { db } from './index';
 import { shifts, type Shift, type Shift_Insert } from './schema';
 
@@ -90,29 +90,60 @@ export class ShiftsRepository {
   }
 
   /**
-   * Get total tips for a date range
+   * Get total tips, optionally filtered by date range
    */
-  async getTotalTips(startDate: Date, endDate: Date): Promise<number> {
-    const result = await db
-      .select({ total: shifts.tips })
-      .from(shifts)
-      .where(
-        and(gte(shifts.shiftStart, startDate), lte(shifts.shiftEnd, endDate)),
-      );
+  async getTotalTips(startDate?: Date, endDate?: Date): Promise<number> {
+    const conditions = [];
+    if (startDate) conditions.push(gte(shifts.shiftStart, startDate));
+    if (endDate) conditions.push(lte(shifts.shiftEnd, endDate));
 
-    return result.reduce((sum, row) => sum + row.total, 0);
+    const query = db.select({ total: sum(shifts.tips) }).from(shifts);
+
+    if (conditions.length) {
+      query.where(and(...conditions));
+    }
+
+    const [result] = await query;
+    return Number(result?.total) ?? 0;
   }
 
   /**
    * Get average tips per shift
    */
   async getAverageTips(): Promise<number> {
-    const result = await db.select({ avg: shifts.tips }).from(shifts);
+    const [result] = await db.select({ avg: avg(shifts.tips) }).from(shifts);
 
-    if (result.length === 0) return 0;
+    return Number(result?.avg) ?? 0;
+  }
 
-    const total = result.reduce((sum, row) => sum + row.avg, 0);
-    return total / result.length;
+  /**
+   * Get summary statistics, optionally filtered by date range
+   */
+  async getSummary(startDate?: Date, endDate?: Date) {
+    const conditions = [];
+    if (startDate) conditions.push(gte(shifts.shiftStart, startDate));
+    if (endDate) conditions.push(lte(shifts.shiftEnd, endDate));
+
+    const query = db
+      .select({
+        totalTips: sum(shifts.tips),
+        totalShifts: sum(shifts.id),
+        firstShift: min(shifts.shiftStart),
+        lastShift: max(shifts.shiftEnd),
+      })
+      .from(shifts);
+
+    if (conditions.length) {
+      query.where(and(...conditions));
+    }
+
+    const [result] = await query;
+    return {
+      totalTips: Number(result?.totalTips) ?? 0,
+      totalShifts: Number(result?.totalShifts) ?? 0,
+      firstShift: result?.firstShift ? new Date(result.firstShift) : null,
+      lastShift: result?.lastShift ? new Date(result.lastShift) : null,
+    };
   }
 
   /**

@@ -56,9 +56,7 @@ export default function ShiftHistory({ shifts }: ShiftHistoryProps) {
                   {startTime} - {endTime}
                 </div>
               </div>
-              <div className="flex-shrink-0 font-semibold">
-                ${shift.tips.toFixed(2)}
-              </div>
+              <div className="flex-shrink-0 font-semibold">${shift.tips}</div>
             </div>
           );
         })}
