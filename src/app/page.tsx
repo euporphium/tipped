@@ -1,7 +1,8 @@
-import ShiftHistory from '@/components/shift-history';
-import Actions from '@/components/actions';
+import ShiftHistorySection from '@/components/shift-history';
+import ActionsSection from '@/components/actions';
 import SummaryCard from '@/components/summary-card';
 import { shiftsRepository } from '@/db';
+import { HourlyRateChart } from '@/components/hourly-rate-chart';
 
 async function getRecentShifts() {
   return await shiftsRepository.getRecent(5);
@@ -20,8 +21,8 @@ export default async function Home() {
       <section className="p-3">
         <SummaryCard summary={summary} />
       </section>
-      <Actions />
-      <ShiftHistory shifts={recentShifts} />
+      <ActionsSection />
+      <ShiftHistorySection shifts={recentShifts} />
     </div>
   );
 }

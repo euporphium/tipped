@@ -23,6 +23,7 @@ function getSubtitleText(summary: SummaryCardProps['summary']) {
 
   if (totalShifts === 0) {
     return 'Add a shift to get started with tip tracking.';
+    // return 'Add your first shift to unlock tip insights.'; // TODO Implement Insights card
   }
 
   const shiftsText = `In ${totalShifts} shift${totalShifts === 1 ? '' : 's'}`;
