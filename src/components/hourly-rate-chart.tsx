@@ -100,6 +100,8 @@ export function HourlyRateChart({
     );
   }
 
+  const mx = 0;
+
   return (
     <Card>
       <CardHeader>
@@ -107,7 +109,10 @@ export function HourlyRateChart({
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <LineChart data={data}>
+          <LineChart
+            data={data}
+            margin={{ top: 5, right: 5, left: -25, bottom: 5 }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="date"
