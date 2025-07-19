@@ -1,8 +1,6 @@
-import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { AddShiftDialog } from '@/components/add-shift-dialog';
 
-export default function TrackTipsSection() {
+export default function Actions() {
   return (
     <section className="p-3">
       <header className="mb-3">
