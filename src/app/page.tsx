@@ -1,15 +1,18 @@
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import ShiftHistory from '@/components/shift-history';
+import TrackTipsSection from '@/components/track-tips-section';
+import { shiftsRepository } from '@/db';
 
-export default function Home() {
+async function getRecentShifts() {
+  return await shiftsRepository.getRecent(5);
+}
+
+export default async function Home() {
+  const recentShifts = await getRecentShifts();
+
   return (
     <div>
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <h1>Tipped</h1>
-          </CardTitle>
-        </CardHeader>
-      </Card>
+      <TrackTipsSection />
+      <ShiftHistory shifts={recentShifts} />
     </div>
   );
 }

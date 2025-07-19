@@ -27,14 +27,14 @@ export class ShiftsRepository {
    * Get all shifts
    */
   async findAll(): Promise<Shift[]> {
-    return await db.select().from(shifts).orderBy(desc(shifts.createdAt));
+    return db.select().from(shifts).orderBy(desc(shifts.createdAt));
   }
 
   /**
    * Get shifts with pagination
    */
   async findWithPagination(limit: number, offset: number): Promise<Shift[]> {
-    return await db
+    return db
       .select()
       .from(shifts)
       .orderBy(desc(shifts.createdAt))
@@ -69,7 +69,7 @@ export class ShiftsRepository {
    * Get shifts within a date range
    */
   async findByDateRange(startDate: Date, endDate: Date): Promise<Shift[]> {
-    return await db
+    return db
       .select()
       .from(shifts)
       .where(
@@ -82,7 +82,7 @@ export class ShiftsRepository {
    * Get shifts with tips above a certain amount
    */
   async findByMinTips(minTips: number): Promise<Shift[]> {
-    return await db
+    return db
       .select()
       .from(shifts)
       .where(gte(shifts.tips, minTips))
@@ -132,7 +132,7 @@ export class ShiftsRepository {
    * Get recent shifts (last N shifts)
    */
   async getRecent(limit: number = 10): Promise<Shift[]> {
-    return await db
+    return db
       .select()
       .from(shifts)
       .orderBy(desc(shifts.createdAt))
