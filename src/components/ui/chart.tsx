@@ -48,6 +48,7 @@ export type CustomTooltipProps = TooltipContentProps<ValueType, NameType> & {
     index: number,
     payload: ReadonlyArray<Payload<number | string, string>>,
   ) => React.ReactNode;
+  valueFormatter?: (value: number | string) => React.ReactNode;
   labelClassName?: string;
   color?: string;
 };
@@ -152,6 +153,7 @@ function ChartTooltipContent({
   hideIndicator = false,
   labelFormatter,
   formatter,
+  valueFormatter,
   labelClassName,
   color,
   nameKey,
@@ -269,7 +271,9 @@ function ChartTooltipContent({
                     </div>
                     {item.value && (
                       <span className="text-foreground font-mono font-medium tabular-nums">
-                        {item.value.toLocaleString()}
+                        {valueFormatter
+                          ? valueFormatter(item.value)
+                          : item.value.toLocaleString()}
                       </span>
                     )}
                   </div>

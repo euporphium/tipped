@@ -5,6 +5,7 @@ import { shiftsRepository } from '@/db';
 import { AddShiftDialog } from '@/components/add-shift-dialog';
 import { HourlyRateChart } from '@/components/hourly-rate-chart';
 import { TipsPerShiftChart } from '@/components/tips-per-shift-chart';
+import { DayOfWeekChart } from '@/components/day-of-week-chart';
 
 async function getAllShifts(): Promise<Shift[]> {
   return shiftsRepository.findAll();
@@ -23,6 +24,7 @@ export default async function DemoPage() {
         <DataTable columns={columns} data={shifts} />
         <HourlyRateChart shifts={shifts} />
         <TipsPerShiftChart shifts={shifts} />
+        <DayOfWeekChart shifts={shifts} />
       </div>
     </div>
   );

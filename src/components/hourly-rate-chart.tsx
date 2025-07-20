@@ -50,7 +50,7 @@ export function HourlyRateChart({
 
   const chartConfig = {
     hourlyRate: {
-      label: 'Hourly Rate ($/hr)',
+      label: 'Hourly Rate',
       color: 'var(--chart-1)',
     },
   } satisfies ChartConfig;
@@ -59,7 +59,7 @@ export function HourlyRateChart({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Hourly Rate Over Time</CardTitle>
+          <CardTitle>Hourly Rate Per Shift</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex h-64 items-center justify-center">
@@ -74,7 +74,7 @@ export function HourlyRateChart({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Hourly Rate Over Time</CardTitle>
+          <CardTitle>Hourly Rate Per Shift</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex h-64 items-center justify-center">
@@ -89,7 +89,7 @@ export function HourlyRateChart({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Hourly Rate Over Time</CardTitle>
+          <CardTitle>Hourly Rate Per Shift</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex h-64 items-center justify-center">
@@ -100,18 +100,16 @@ export function HourlyRateChart({
     );
   }
 
-  const mx = 0;
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Hourly Rate Over Time</CardTitle>
+        <CardTitle>Hourly Rate Per Shift</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
           <LineChart
             data={data}
-            margin={{ top: 5, right: 5, left: -25, bottom: 5 }}
+            margin={{ top: 5, right: 5, left: -20, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
@@ -134,7 +132,6 @@ export function HourlyRateChart({
                 accessibilityLayer,
               }) => {
                 if (active && payload && payload.length) {
-                  const data = payload[0].payload as HourlyRateData;
                   return (
                     <ChartTooltipContent
                       active={active}
@@ -151,6 +148,12 @@ export function HourlyRateChart({
                           day: 'numeric',
                         });
                       }}
+                      valueFormatter={(value) =>
+                        new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'USD',
+                        }).format(Number(value))
+                      }
                     />
                   );
                 }

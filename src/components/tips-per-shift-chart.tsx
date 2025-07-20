@@ -41,7 +41,7 @@ export function TipsPerShiftChart({
 
   const chartConfig = {
     tips: {
-      label: 'Tips ($)',
+      label: 'Tips',
       color: 'var(--chart-1)',
     },
   } satisfies ChartConfig;
@@ -50,7 +50,7 @@ export function TipsPerShiftChart({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Tips Per Shift Over Time</CardTitle>
+          <CardTitle>Tips Per Shift</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex h-64 items-center justify-center">
@@ -65,7 +65,7 @@ export function TipsPerShiftChart({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Tips Per Shift Over Time</CardTitle>
+          <CardTitle>Tips Per Shift</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex h-64 items-center justify-center">
@@ -80,7 +80,7 @@ export function TipsPerShiftChart({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Tips Per Shift Over Time</CardTitle>
+          <CardTitle>Tips Per Shift</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex h-64 items-center justify-center">
@@ -94,13 +94,13 @@ export function TipsPerShiftChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Tips Per Shift Over Time</CardTitle>
+        <CardTitle>Tips Per Shift</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
           <LineChart
             data={data}
-            margin={{ top: 5, right: 5, left: -25, bottom: 5 }}
+            margin={{ top: 5, right: 5, left: -20, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
@@ -123,7 +123,6 @@ export function TipsPerShiftChart({
                 accessibilityLayer,
               }) => {
                 if (active && payload && payload.length) {
-                  const data = payload[0].payload as TipsPerShiftData;
                   return (
                     <ChartTooltipContent
                       active={active}
@@ -140,6 +139,12 @@ export function TipsPerShiftChart({
                           day: 'numeric',
                         });
                       }}
+                      valueFormatter={(value) =>
+                        new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'USD',
+                        }).format(Number(value))
+                      }
                     />
                   );
                 }
