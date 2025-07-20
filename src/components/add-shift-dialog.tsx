@@ -2,15 +2,8 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { AddShiftForm } from '@/components/add-shift-form';
+import { ShiftDialog } from '@/components/shift-dialog';
+import { ShiftFormComponent } from '@/components/shift-form';
 import { Shift_Insert } from '@/db/schema';
 import { Plus } from 'lucide-react';
 import { addShift } from '@/app/shifts/actions';
@@ -40,22 +33,24 @@ export function AddShiftDialog() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <ShiftDialog
+      trigger={
         <Button>
           <Plus className="mr-2 h-4 w-4" />
           Add New Shift
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add New Shift</DialogTitle>
-          <DialogDescription>
-            Enter the details for your new shift. Click save when you're done.
-          </DialogDescription>
-        </DialogHeader>
-        <AddShiftForm onAddShift={handleAddShift} isSubmitting={isSubmitting} />
-      </DialogContent>
-    </Dialog>
+      }
+      title="Add New Shift"
+      description="Enter the details for your new shift. Click save when you're done."
+      open={open}
+      onOpenChange={setOpen}
+    >
+      <ShiftFormComponent
+        onSubmitShift={handleAddShift}
+        isSubmitting={isSubmitting}
+        submitText="Save Shift"
+        submittingText="Saving..."
+      />
+    </ShiftDialog>
   );
 }

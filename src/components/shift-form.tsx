@@ -13,30 +13,40 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DatePicker } from '@/components/date-picker';
-import { Shift_Insert, Shift } from '@/db/schema';
+import { Shift_Insert } from '@/db/schema';
 import {
   shiftFormSchema,
   combineDateAndTime,
   calculateEndDate,
-  extractTimeString,
   type ShiftForm,
 } from '@/lib/validations';
 
-export const EditShiftForm = ({
-  shift,
-  onUpdateShift,
-  isSubmitting = false,
-}: {
-  shift: Shift;
-  onUpdateShift: (shift: Shift_Insert) => void;
+interface ShiftFormComponentProps {
+  initialShift?: {
+    shiftDate: Date;
+    shiftStartTime: string;
+    shiftEndTime: string;
+    tips?: number;
+  };
+  onSubmitShift: (shift: Shift_Insert) => void;
   isSubmitting?: boolean;
-}) => {
+  submitText?: string;
+  submittingText?: string;
+}
+
+export const ShiftFormComponent = ({
+  initialShift,
+  onSubmitShift,
+  isSubmitting = false,
+  submitText = 'Save Shift',
+  submittingText = 'Saving...',
+}: ShiftFormComponentProps) => {
   const form = useForm<ShiftForm>({
-    defaultValues: {
-      shiftDate: shift.shiftStart,
-      shiftStartTime: extractTimeString(shift.shiftStart),
-      shiftEndTime: extractTimeString(shift.shiftEnd),
-      tips: shift.tips,
+    defaultValues: initialShift ?? {
+      shiftDate: new Date(),
+      shiftStartTime: '09:00',
+      shiftEndTime: new Date().toTimeString().slice(0, 5),
+      tips: undefined,
     },
     resolver: zodResolver(shiftFormSchema),
   });
@@ -56,7 +66,7 @@ export const EditShiftForm = ({
       shiftEnd: endDate,
       tips: data.tips ?? 0,
     };
-    onUpdateShift(shiftData);
+    onSubmitShift(shiftData);
   };
 
   return (
@@ -126,7 +136,7 @@ export const EditShiftForm = ({
                   step="1"
                   min={0}
                   placeholder="Tips Earned"
-                  // Ensure value is an empty string if field.value is undefined or NaN
+                  // Ensure value is an empty string if field.value is null, undefined, or NaN
                   // Otherwise, it should be the number itself.
                   value={
                     field.value === undefined || isNaN(field.value)
@@ -152,7 +162,7 @@ export const EditShiftForm = ({
         />
 
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Updating...' : 'Update Shift'}
+          {isSubmitting ? submittingText : submitText}
         </Button>
       </form>
     </Form>

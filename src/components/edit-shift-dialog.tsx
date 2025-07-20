@@ -2,18 +2,11 @@
 
 import { useState } from 'react';
 import { updateShift } from '@/app/shifts/actions';
-
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { ShiftDialog } from '@/components/shift-dialog';
+import { ShiftFormComponent } from '@/components/shift-form';
 import { Shift, Shift_Insert } from '@/db/schema';
-import { EditShiftForm } from './edit-shift-form';
+import { extractTimeString } from '@/lib/validations';
 
 interface EditShiftDialogProps {
   shift: Shift;
@@ -51,8 +44,8 @@ export function EditShiftDialog({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+    <ShiftDialog
+      trigger={
         <DropdownMenuItem
           onSelect={(e) => {
             e.preventDefault();
@@ -60,21 +53,24 @@ export function EditShiftDialog({
         >
           Edit shift
         </DropdownMenuItem>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit Shift</DialogTitle>
-          <DialogDescription>
-            Update the details for your shift from{' '}
-            {shift.shiftStart.toLocaleDateString()}.
-          </DialogDescription>
-        </DialogHeader>
-        <EditShiftForm
-          shift={shift}
-          onUpdateShift={handleUpdate}
-          isSubmitting={isUpdating}
-        />
-      </DialogContent>
-    </Dialog>
+      }
+      title="Edit Shift"
+      description={`Update the details for your shift from ${shift.shiftStart.toLocaleDateString()}.`}
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
+      <ShiftFormComponent
+        initialShift={{
+          shiftDate: shift.shiftStart,
+          shiftStartTime: extractTimeString(shift.shiftStart),
+          shiftEndTime: extractTimeString(shift.shiftEnd),
+          tips: shift.tips,
+        }}
+        onSubmitShift={handleUpdate}
+        isSubmitting={isUpdating}
+        submitText="Update Shift"
+        submittingText="Updating..."
+      />
+    </ShiftDialog>
   );
 }
