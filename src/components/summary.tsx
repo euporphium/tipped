@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-interface SummarySectionProps {
+interface SummaryProps {
   summary: {
     totalTips: number;
     totalShifts: number;
@@ -19,7 +19,7 @@ function formatDateRange(firstShift: Date | null, lastShift: Date | null) {
   return first === last ? `on ${first}` : `from ${first} - ${last}`;
 }
 
-function getSubtitleText(summary: SummarySectionProps['summary']) {
+function getSubtitleText(summary: SummaryProps['summary']) {
   const { totalShifts, firstShift, lastShift } = summary;
 
   if (totalShifts === 0) {
@@ -32,9 +32,9 @@ function getSubtitleText(summary: SummarySectionProps['summary']) {
   return dateRange ? `${shiftsText} ${dateRange}` : shiftsText;
 }
 
-export default function SummarySection({ summary }: SummarySectionProps) {
+export default function Summary({ summary }: SummaryProps) {
   return (
-    <section className="p-3">
+    <section>
       <header className="mb-3 flex items-center justify-between">
         <h2 className="text-xl font-semibold">Summary</h2>
         {summary.totalShifts > 0 && (

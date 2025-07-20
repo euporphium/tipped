@@ -23,7 +23,7 @@ export default async function ShiftPage({ params }: ShiftPageProps) {
 
   return (
     <div className="container mx-auto p-2">
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-4xl">
         <Card>
           <CardHeader>
             <CardTitle>Shift ID: {shift.id}</CardTitle>

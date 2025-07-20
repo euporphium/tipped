@@ -22,7 +22,7 @@ const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
 
 export default function RecentShifts({ shifts }: ShiftHistoryProps) {
   return (
-    <section className="p-3">
+    <section>
       <header className="mb-3 flex items-baseline justify-between">
         <h2 className="text-xl font-semibold">Recent Shifts</h2>
         <Button asChild variant="link" className="p-0">

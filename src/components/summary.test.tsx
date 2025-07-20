@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import SummarySection from './summary-section';
+import Summary from './summary';
 
-describe('SummarySection', () => {
+describe('Summary', () => {
   it('renders summary information correctly', () => {
     const summary = {
       totalTips: 1250,
@@ -11,7 +11,7 @@ describe('SummarySection', () => {
       lastShift: new Date('2024-01-31'),
     };
 
-    render(<SummarySection summary={summary} />);
+    render(<Summary summary={summary} />);
 
     expect(screen.getByText('Summary')).toBeInTheDocument();
     expect(screen.getByText('$1250')).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe('SummarySection', () => {
       lastShift: new Date('2024-01-15'),
     };
 
-    render(<SummarySection summary={summary} />);
+    render(<Summary summary={summary} />);
 
     expect(screen.getByText('$100')).toBeInTheDocument();
     expect(screen.getByText(/In 1 shift on/)).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('SummarySection', () => {
       lastShift: null,
     };
 
-    render(<SummarySection summary={summary} />);
+    render(<Summary summary={summary} />);
 
     expect(screen.getByText('$0')).toBeInTheDocument();
     expect(
@@ -56,7 +56,7 @@ describe('SummarySection', () => {
       lastShift: null,
     };
 
-    render(<SummarySection summary={summary} />);
+    render(<Summary summary={summary} />);
 
     expect(screen.getByText('$500')).toBeInTheDocument();
     expect(screen.getByText('In 5 shifts')).toBeInTheDocument();

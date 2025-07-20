@@ -13,9 +13,14 @@ export default async function DemoPage() {
 
   return (
     <div className="container mx-auto p-2">
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold">Shifts</h1>
+          <p className="text-muted-foreground mt-2">
+            Manage and view all your recorded shifts
+          </p>
+        </div>
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Shifts</h1>
           <AddShiftDialog />
         </div>
         <DataTable columns={columns} data={shifts} />
