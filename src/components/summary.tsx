@@ -34,7 +34,7 @@ function getSubtitleText(summary: SummaryProps['summary']) {
 
 export default function Summary({ summary }: SummaryProps) {
   return (
-    <section>
+    <section className="mb-6">
       <header className="mb-3 flex items-center justify-between">
         <h2 className="text-xl font-semibold">Summary</h2>
         {summary.totalShifts > 0 && (

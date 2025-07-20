@@ -43,9 +43,7 @@ describe('Summary', () => {
     render(<Summary summary={summary} />);
 
     expect(screen.getByText('$0')).toBeInTheDocument();
-    expect(
-      screen.getByText('Add a shift to get started with tip tracking.'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Add a shift to get started.')).toBeInTheDocument();
   });
 
   it('handles missing date range correctly', () => {

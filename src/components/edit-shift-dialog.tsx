@@ -1,64 +1,56 @@
 'use client';
 
-import { useState } from 'react';
-import { updateShift } from '@/app/shifts/actions';
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { ReactNode } from 'react';
+
 import { ShiftDialog } from '@/components/shift-dialog';
 import { ShiftFormComponent } from '@/components/shift-form';
-import { Shift, Shift_Insert } from '@/db/schema';
+import { Shift } from '@/db/schema';
 import { extractTimeString } from '@/lib/validations';
+import { useEditShiftDialog } from '@/hooks/use-edit-shift-dialog';
 
 interface EditShiftDialogProps {
   shift: Shift;
+  trigger: ReactNode | ((props: { onClick: () => void }) => ReactNode);
   onEditSuccess?: () => void;
 }
 
 export function EditShiftDialog({
   shift,
+  trigger,
   onEditSuccess,
 }: EditShiftDialogProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const {
+    open,
+    isSubmitting,
+    error,
+    openDialog,
+    handleOpenChange,
+    handleUpdateShift,
+  } = useEditShiftDialog({
+    shift,
+    onSuccess: onEditSuccess,
+  });
 
-  const handleUpdate = async (shiftData: Shift_Insert) => {
-    setIsUpdating(true);
-    try {
-      const result = await updateShift(shift.id, shiftData);
-
-      if (result.success) {
-        // Call the callback to close the parent dropdown
-        onEditSuccess?.();
-        // Close the dialog
-        setIsOpen(false);
-        // The page will automatically refresh due to revalidatePath
-      } else {
-        console.error('Failed to update shift:', result.error);
-        alert(`Failed to update shift: ${result.error}`);
-      }
-    } catch (error) {
-      console.error('Error updating shift:', error);
-      alert('Failed to update shift. Please try again.');
-    } finally {
-      setIsUpdating(false);
+  const renderTrigger = () => {
+    if (typeof trigger === 'function') {
+      return trigger({ onClick: openDialog });
     }
+    return trigger;
   };
 
   return (
     <ShiftDialog
-      trigger={
-        <DropdownMenuItem
-          onSelect={(e) => {
-            e.preventDefault();
-          }}
-        >
-          Edit shift
-        </DropdownMenuItem>
-      }
+      trigger={renderTrigger()}
       title="Edit Shift"
       description={`Update the details for your shift from ${shift.shiftStart.toLocaleDateString()}.`}
-      open={isOpen}
-      onOpenChange={setIsOpen}
+      open={open}
+      onOpenChange={handleOpenChange}
     >
+      {error && (
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+          {error}
+        </div>
+      )}
       <ShiftFormComponent
         initialShift={{
           shiftDate: shift.shiftStart,
@@ -66,8 +58,8 @@ export function EditShiftDialog({
           shiftEndTime: extractTimeString(shift.shiftEnd),
           tips: shift.tips,
         }}
-        onSubmitShift={handleUpdate}
-        isSubmitting={isUpdating}
+        onSubmitShift={handleUpdateShift}
+        isSubmitting={isSubmitting}
         submitText="Update Shift"
         submittingText="Updating..."
       />

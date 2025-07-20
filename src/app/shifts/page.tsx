@@ -2,7 +2,6 @@ import { Shift } from '@/db/schema';
 import { columns } from './columns';
 import { DataTable } from './data-table';
 import { shiftsRepository } from '@/db';
-import { AddShiftDialog } from '@/components/add-shift-dialog';
 
 async function getAllShifts(): Promise<Shift[]> {
   return shiftsRepository.findAll();
@@ -19,9 +18,6 @@ export default async function DemoPage() {
           <p className="text-muted-foreground mt-2">
             Manage and view all your recorded shifts
           </p>
-        </div>
-        <div className="mb-4 flex items-center justify-between">
-          <AddShiftDialog />
         </div>
         <DataTable columns={columns} data={shifts} />
       </div>

@@ -45,7 +45,19 @@ function ActionsCell({ shift }: { shift: Shift }) {
         <DropdownMenuItem onClick={() => router.push(`/shifts/${shift.id}`)}>
           View shift details
         </DropdownMenuItem>
-        <EditShiftDialog shift={shift} onEditSuccess={handleDeleteSuccess} />
+        <EditShiftDialog
+          shift={shift}
+          trigger={
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
+            >
+              Edit shift
+            </DropdownMenuItem>
+          }
+          onEditSuccess={handleDeleteSuccess}
+        />
         <DropdownMenuSeparator />
         <DeleteShiftDialog
           shift={shift}
@@ -101,7 +113,7 @@ export const columns: ColumnDef<Shift>[] = [
     header: 'Tips',
     cell: ({ row }) => {
       return (
-        <div className="flex justify-between font-mono max-w-[6ch]">
+        <div className="flex max-w-[6ch] justify-between font-mono">
           <span>$</span>
           <span>{row.original.tips}</span>
         </div>

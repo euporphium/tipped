@@ -66,7 +66,6 @@ export default function RecentShifts({ shifts }: ShiftHistoryProps) {
           );
         })}
       </div>
-      <AddShiftDialog />
     </section>
   );
 }

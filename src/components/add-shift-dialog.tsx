@@ -1,50 +1,54 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { ReactNode } from 'react';
+
 import { ShiftDialog } from '@/components/shift-dialog';
 import { ShiftFormComponent } from '@/components/shift-form';
-import { Shift_Insert } from '@/db/schema';
-import { Plus } from 'lucide-react';
-import { addShift } from '@/app/shifts/actions';
 
-export function AddShiftDialog() {
-  const [open, setOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+import { useAddShiftDialog } from '@/hooks/use-add-shift-dialog';
 
-  const handleAddShift = async (shift: Shift_Insert) => {
-    setIsSubmitting(true);
-    try {
-      const result = await addShift(shift);
+interface AddShiftDialogProps {
+  trigger: ReactNode | ((props: { onClick: () => void }) => ReactNode);
+  onSuccess?: () => void;
+  onError?: (error: string) => void;
+  autoClose?: boolean;
+}
 
-      if (result.success) {
-        setOpen(false);
-        // The page will automatically refresh due to revalidatePath
-      } else {
-        console.error('Failed to add shift:', result.error);
-        alert(`Failed to add shift: ${result.error}`);
-      }
-    } catch (error) {
-      console.error('Error adding shift:', error);
-      alert('Failed to add shift. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+export function AddShiftDialog({
+  trigger,
+  onSuccess,
+  onError,
+  autoClose = true,
+}: AddShiftDialogProps) {
+  const {
+    open,
+    isSubmitting,
+    error,
+    openDialog,
+    handleOpenChange,
+    handleAddShift,
+  } = useAddShiftDialog({ onSuccess, onError, autoClose });
+
+  const renderTrigger = () => {
+    if (typeof trigger === 'function') {
+      return trigger({ onClick: openDialog });
     }
+    return trigger;
   };
 
   return (
     <ShiftDialog
-      trigger={
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add New Shift
-        </Button>
-      }
+      trigger={renderTrigger()}
       title="Add New Shift"
       description="Enter the details for your new shift. Click save when you're done."
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={handleOpenChange}
     >
+      {error && (
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+          {error}
+        </div>
+      )}
       <ShiftFormComponent
         onSubmitShift={handleAddShift}
         isSubmitting={isSubmitting}
