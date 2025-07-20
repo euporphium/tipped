@@ -17,6 +17,7 @@ import { Shift_Insert, Shift } from '@/db/schema';
 import {
   shiftFormSchema,
   combineDateAndTime,
+  calculateEndDate,
   extractTimeString,
   type ShiftForm,
 } from '@/lib/validations';
@@ -32,8 +33,7 @@ export const EditShiftForm = ({
 }) => {
   const form = useForm<ShiftForm>({
     defaultValues: {
-      shiftStart: shift.shiftStart,
-      shiftEnd: shift.shiftEnd,
+      shiftDate: shift.shiftStart,
       shiftStartTime: extractTimeString(shift.shiftStart),
       shiftEndTime: extractTimeString(shift.shiftEnd),
       tips: shift.tips,
@@ -43,14 +43,18 @@ export const EditShiftForm = ({
 
   const onSubmit = (data: ShiftForm) => {
     // Combine date and time for shift start and end
-    const startDate = combineDateAndTime(data.shiftStart, data.shiftStartTime);
-    const endDate = combineDateAndTime(data.shiftEnd, data.shiftEndTime);
+    const startDate = combineDateAndTime(data.shiftDate, data.shiftStartTime);
+    const endDate = calculateEndDate(
+      data.shiftDate,
+      data.shiftStartTime,
+      data.shiftEndTime,
+    );
 
     // Convert the form data to match the database schema
     const shiftData: Shift_Insert = {
       shiftStart: startDate,
       shiftEnd: endDate,
-      tips: data.tips,
+      tips: data.tips ?? 0,
     };
     onUpdateShift(shiftData);
   };
@@ -58,24 +62,21 @@ export const EditShiftForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
-        <div className="grid gap-4">
-          <FormField
-            control={form.control}
-            name="shiftStart"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Shift Start Date</FormLabel>
-                <FormControl>
-                  <DatePicker
-                    date={field.value}
-                    onDateChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <FormField
+          control={form.control}
+          name="shiftDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Shift Date</FormLabel>
+              <FormControl>
+                <DatePicker date={field.value} onDateChange={field.onChange} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="shiftStartTime"
@@ -87,25 +88,6 @@ export const EditShiftForm = ({
                     type="time"
                     value={field.value}
                     onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="grid gap-4">
-          <FormField
-            control={form.control}
-            name="shiftEnd"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Shift End Date</FormLabel>
-                <FormControl>
-                  <DatePicker
-                    date={field.value}
-                    onDateChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />
@@ -144,18 +126,18 @@ export const EditShiftForm = ({
                   step="1"
                   min={0}
                   placeholder="Tips Earned"
-                  // Ensure value is an empty string if field.value is null, undefined, or NaN
+                  // Ensure value is an empty string if field.value is undefined or NaN
                   // Otherwise, it should be the number itself.
                   value={
-                    field.value === null || isNaN(field.value)
+                    field.value === undefined || isNaN(field.value)
                       ? ''
                       : field.value
                   }
                   onChange={(e) => {
                     const stringValue = e.target.value;
                     if (stringValue === '') {
-                      // If input is empty, set RHF value to null (or undefined)
-                      field.onChange(null);
+                      // If input is empty, set RHF value to undefined
+                      field.onChange(undefined);
                     } else {
                       // Otherwise, parse as float. RHF will store it as a number.
                       // Zod validation will handle non-numeric input if any.

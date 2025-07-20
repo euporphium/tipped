@@ -17,6 +17,7 @@ import { Shift_Insert } from '@/db/schema';
 import {
   shiftFormSchema,
   combineDateAndTime,
+  calculateEndDate,
   type ShiftForm,
 } from '@/lib/validations';
 
@@ -29,8 +30,7 @@ export const AddShiftForm = ({
 }) => {
   const form = useForm<ShiftForm>({
     defaultValues: {
-      shiftStart: new Date(),
-      shiftEnd: new Date(),
+      shiftDate: new Date(),
       shiftStartTime: '09:00',
       shiftEndTime: new Date().toTimeString().slice(0, 5),
       tips: undefined,
@@ -40,14 +40,18 @@ export const AddShiftForm = ({
 
   const onSubmit = (data: ShiftForm) => {
     // Combine date and time for shift start and end
-    const startDate = combineDateAndTime(data.shiftStart, data.shiftStartTime);
-    const endDate = combineDateAndTime(data.shiftEnd, data.shiftEndTime);
+    const startDate = combineDateAndTime(data.shiftDate, data.shiftStartTime);
+    const endDate = calculateEndDate(
+      data.shiftDate,
+      data.shiftStartTime,
+      data.shiftEndTime,
+    );
 
     // Convert the form data to match the database schema
     const shiftData: Shift_Insert = {
       shiftStart: startDate,
       shiftEnd: endDate,
-      tips: data.tips,
+      tips: data.tips ?? 0,
     };
     onAddShift(shiftData);
   };
@@ -55,24 +59,21 @@ export const AddShiftForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
-        <div className="grid gap-4">
-          <FormField
-            control={form.control}
-            name="shiftStart"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Shift Start Date</FormLabel>
-                <FormControl>
-                  <DatePicker
-                    date={field.value}
-                    onDateChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <FormField
+          control={form.control}
+          name="shiftDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Shift Date</FormLabel>
+              <FormControl>
+                <DatePicker date={field.value} onDateChange={field.onChange} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="shiftStartTime"
@@ -84,25 +85,6 @@ export const AddShiftForm = ({
                     type="time"
                     value={field.value}
                     onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="grid gap-4">
-          <FormField
-            control={form.control}
-            name="shiftEnd"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Shift End Date</FormLabel>
-                <FormControl>
-                  <DatePicker
-                    date={field.value}
-                    onDateChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />
@@ -144,15 +126,15 @@ export const AddShiftForm = ({
                   // Ensure value is an empty string if field.value is null, undefined, or NaN
                   // Otherwise, it should be the number itself.
                   value={
-                    field.value === null || isNaN(field.value)
+                    field.value === undefined || isNaN(field.value)
                       ? ''
                       : field.value
                   }
                   onChange={(e) => {
                     const stringValue = e.target.value;
                     if (stringValue === '') {
-                      // If input is empty, set RHF value to null (or undefined)
-                      field.onChange(null);
+                      // If input is empty, set RHF value to undefined
+                      field.onChange(undefined);
                     } else {
                       // Otherwise, parse as float. RHF will store it as a number.
                       // Zod validation will handle non-numeric input if any.

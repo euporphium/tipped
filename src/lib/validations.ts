@@ -9,6 +9,29 @@ export const combineDateAndTime = (date: Date, timeString: string): Date => {
   return combinedDate;
 };
 
+// Helper function to calculate end date, handling shifts that end after midnight
+export const calculateEndDate = (
+  startDate: Date,
+  startTime: string,
+  endTime: string,
+): Date => {
+  const [startHours, startMinutes] = startTime.split(':').map(Number);
+  const [endHours, endMinutes] = endTime.split(':').map(Number);
+
+  // Convert to minutes for easier comparison
+  const startMinutesTotal = startHours * 60 + startMinutes;
+  const endMinutesTotal = endHours * 60 + endMinutes;
+
+  // If end time is before start time, the shift ends on the next day
+  const endDate = new Date(startDate);
+  if (endMinutesTotal < startMinutesTotal) {
+    endDate.setDate(endDate.getDate() + 1);
+  }
+
+  endDate.setHours(endHours, endMinutes, 0, 0);
+  return endDate;
+};
+
 // Helper function to extract time string from date
 export const extractTimeString = (date: Date): string => {
   return date.toTimeString().slice(0, 5);
@@ -17,24 +40,36 @@ export const extractTimeString = (date: Date): string => {
 // Form schema for shift creation/editing
 export const shiftFormSchema = z
   .object({
-    shiftStart: z.date(),
-    shiftEnd: z.date(),
+    shiftDate: z.date(),
     shiftStartTime: z.string(),
     shiftEndTime: z.string(),
-    tips: z.number().min(0),
+    tips: z.number().min(0).optional(),
   })
   .refine(
     (data) => {
-      const startDate = combineDateAndTime(
-        data.shiftStart,
-        data.shiftStartTime,
-      );
-      const endDate = combineDateAndTime(data.shiftEnd, data.shiftEndTime);
-      return endDate > startDate;
+      // For shifts ending after midnight, end time can be before start time
+      // We'll handle the date logic in the form submission
+      const [startHours, startMinutes] = data.shiftStartTime
+        .split(':')
+        .map(Number);
+      const [endHours, endMinutes] = data.shiftEndTime.split(':').map(Number);
+
+      // Convert to minutes for easier comparison
+      const startMinutesTotal = startHours * 60 + startMinutes;
+      const endMinutesTotal = endHours * 60 + endMinutes;
+
+      // Allow end time to be before start time (indicating next day)
+      // But ensure the shift is at least 30 minutes long
+      const durationMinutes =
+        endMinutesTotal >= startMinutesTotal
+          ? endMinutesTotal - startMinutesTotal
+          : 24 * 60 - startMinutesTotal + endMinutesTotal;
+
+      return durationMinutes >= 30;
     },
     {
-      message: 'End date and time must be after start date and time',
-      path: ['shiftEnd'],
+      message: 'Shift must be at least 30 minutes long',
+      path: ['shiftEndTime'],
     },
   );
 
