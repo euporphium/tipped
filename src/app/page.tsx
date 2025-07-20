@@ -1,5 +1,5 @@
 import RecentShifts from '@/components/recent-shifts';
-import SummaryCard from '@/components/summary-card';
+import SummarySection from '@/components/summary-section';
 import { shiftsRepository } from '@/db';
 import { HourlyRateChart } from '@/components/hourly-rate-chart';
 
@@ -17,9 +17,7 @@ export default async function Home() {
 
   return (
     <div>
-      <section className="p-3">
-        <SummaryCard summary={summary} />
-      </section>
+      <SummarySection summary={summary} />
       <RecentShifts shifts={recentShifts} />
     </div>
   );
