@@ -1,5 +1,6 @@
 import { Shift } from '@/db/schema';
 import { CalendarClock } from 'lucide-react';
+import { AddShiftDialog } from '@/components/add-shift-dialog';
 
 interface ShiftHistoryProps {
   shifts: Shift[];
@@ -17,11 +18,11 @@ const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
   day: 'numeric',
 };
 
-export default function ShiftHistory({ shifts }: ShiftHistoryProps) {
+export default function RecentShifts({ shifts }: ShiftHistoryProps) {
   return (
     <section className="p-3">
       <header className="mb-3 flex items-baseline justify-between">
-        <h2 className="text-xl font-semibold">History</h2>
+        <h2 className="text-xl font-semibold">Recent Shifts</h2>
         <a
           href="/shifts"
           className="text-sm text-blue-600 underline transition-colors hover:text-blue-800"
@@ -29,7 +30,7 @@ export default function ShiftHistory({ shifts }: ShiftHistoryProps) {
           View all
         </a>
       </header>
-      <div className="flex flex-col gap-3">
+      <div className="mb-3 flex flex-col gap-3">
         {shifts.map((shift) => {
           const startTime = shift.shiftStart.toLocaleTimeString(
             'en-US',
@@ -61,6 +62,7 @@ export default function ShiftHistory({ shifts }: ShiftHistoryProps) {
           );
         })}
       </div>
+      <AddShiftDialog />
     </section>
   );
 }
