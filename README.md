@@ -1,5 +1,7 @@
 # Tipped
 
+[![CI Status](https://woodpecker.i258.net/api/badges/2/status.svg)](https://woodpecker.i258.net/repos/2)
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Environment Setup
