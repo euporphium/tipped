@@ -47,6 +47,34 @@ pnpm db:migrate
 pnpm db:studio
 ```
 
+## CI/CD
+
+This project uses [Woodpecker CI](https://woodpecker-ci.org/) for continuous integration. The CI pipeline is configured in `.woodpecker/ci.yml` and includes:
+
+- **Testing**: Runs Vitest tests on every push
+- **Slack Notifications**: Sends build status notifications to Slack
+
+### Setup
+
+To enable Slack notifications, add the following secret to your Woodpecker CI repository settings:
+
+- `slack-webhook-url`: Your Slack webhook URL for notifications
+
+## Testing
+
+This project uses [Vitest](https://vitest.dev/) for testing with React Testing Library. See the [testing documentation](src/tests/README.md) for detailed information about the testing setup.
+
+```bash
+# Run tests in watch mode
+pnpm test
+
+# Run tests once
+pnpm test:run
+
+# Run tests with UI
+pnpm test:ui
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

@@ -1,0 +1,16 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: test
+    image: node:24
+    commands:
+      - corepack enable pnpm
+      - pnpm install
+      - pnpm test
+  - name: slack
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack-webhook-url
