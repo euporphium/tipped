@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 interface SummarySectionProps {
   summary: {
     totalTips: number;
@@ -33,8 +35,16 @@ function getSubtitleText(summary: SummarySectionProps['summary']) {
 export default function SummarySection({ summary }: SummarySectionProps) {
   return (
     <section className="p-3">
-      <header className="mb-3">
+      <header className="mb-3 flex items-center justify-between">
         <h2 className="text-xl font-semibold">Summary</h2>
+        {summary.totalShifts > 0 && (
+          <Link
+            href="/insights"
+            className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+          >
+            View Insights →
+          </Link>
+        )}
       </header>
       <div className="space-y-2">
         <div className="text-2xl font-bold">${summary.totalTips}</div>

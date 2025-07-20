@@ -1,7 +1,6 @@
 import RecentShifts from '@/components/recent-shifts';
 import SummarySection from '@/components/summary-section';
 import { shiftsRepository } from '@/db';
-import { HourlyRateChart } from '@/components/hourly-rate-chart';
 
 async function getRecentShifts() {
   return await shiftsRepository.getRecent(5);
