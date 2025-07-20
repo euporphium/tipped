@@ -51,14 +51,18 @@ pnpm db:studio
 
 This project uses [Woodpecker CI](https://woodpecker-ci.org/) for continuous integration. The CI pipeline is configured in `.woodpecker/ci.yml` and includes:
 
-- **Testing**: Runs Vitest tests on every push
-- **Slack Notifications**: Sends build status notifications to Slack
+- **Testing**: Runs Vitest tests on every push and pull request
+- **Slack Notifications**: Sends build status notifications to Slack (optional)
 
 ### Setup
 
-To enable Slack notifications, add the following secret to your Woodpecker CI repository settings:
+The CI pipeline will run automatically on pushes and pull requests. To enable Slack notifications (optional):
 
-- `slack-webhook-url`: Your Slack webhook URL for notifications
+1. Create a Slack webhook URL in your Slack workspace
+2. Add the following secret to your Woodpecker CI repository settings:
+   - `slack-webhook-url`: Your Slack webhook URL for notifications
+
+If the Slack webhook secret is not configured, the pipeline will still run tests but skip Slack notifications.
 
 ## Testing
 
