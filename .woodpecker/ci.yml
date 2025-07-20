@@ -23,4 +23,4 @@ steps:
         - pull_request
     settings:
       webhook:
-        from_secret: slack-webhook-url
+        from_secret: slack_webhook_url
