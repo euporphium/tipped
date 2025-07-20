@@ -43,7 +43,7 @@ export const shiftFormSchema = z
     shiftDate: z.date(),
     shiftStartTime: z.string(),
     shiftEndTime: z.string(),
-    tips: z.number().min(0).optional(),
+    tips: z.number().int().min(0).optional(),
   })
   .refine(
     (data) => {

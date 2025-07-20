@@ -135,6 +135,8 @@ export const ShiftFormComponent = ({
                   type="number"
                   step="1"
                   min={0}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   placeholder="Tips Earned"
                   // Ensure value is an empty string if field.value is null, undefined, or NaN
                   // Otherwise, it should be the number itself.
@@ -149,9 +151,11 @@ export const ShiftFormComponent = ({
                       // If input is empty, set RHF value to undefined
                       field.onChange(undefined);
                     } else {
-                      // Otherwise, parse as float. RHF will store it as a number.
-                      // Zod validation will handle non-numeric input if any.
-                      field.onChange(parseFloat(stringValue));
+                      // Parse as integer - the input restrictions should prevent decimals
+                      const intValue = parseInt(stringValue, 10);
+                      if (!isNaN(intValue)) {
+                        field.onChange(intValue);
+                      }
                     }
                   }}
                 />
