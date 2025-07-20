@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 interface SummarySectionProps {
   summary: {
@@ -23,7 +24,6 @@ function getSubtitleText(summary: SummarySectionProps['summary']) {
 
   if (totalShifts === 0) {
     return 'Add a shift to get started.';
-    // return 'Add your first shift to unlock tip insights.'; // TODO Implement Insights card
   }
 
   const shiftsText = `In ${totalShifts} shift${totalShifts === 1 ? '' : 's'}`;
@@ -38,12 +38,14 @@ export default function SummarySection({ summary }: SummarySectionProps) {
       <header className="mb-3 flex items-center justify-between">
         <h2 className="text-xl font-semibold">Summary</h2>
         {summary.totalShifts > 0 && (
-          <Link
-            href="/insights"
-            className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-          >
-            View Insights →
-          </Link>
+          <Button asChild variant="link" className="p-0">
+            <Link
+              href="/insights"
+              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+            >
+              View Insights
+            </Link>
+          </Button>
         )}
       </header>
       <div className="space-y-2">

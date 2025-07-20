@@ -1,6 +1,8 @@
-import { Shift } from '@/db/schema';
+import Link from 'next/link';
 import { CalendarClock } from 'lucide-react';
 import { AddShiftDialog } from '@/components/add-shift-dialog';
+import { Shift } from '@/db/schema';
+import { Button } from '@/components/ui/button';
 
 interface ShiftHistoryProps {
   shifts: Shift[];
@@ -23,12 +25,14 @@ export default function RecentShifts({ shifts }: ShiftHistoryProps) {
     <section className="p-3">
       <header className="mb-3 flex items-baseline justify-between">
         <h2 className="text-xl font-semibold">Recent Shifts</h2>
-        <a
-          href="/shifts"
-          className="text-sm text-blue-600 underline transition-colors hover:text-blue-800"
-        >
-          View all
-        </a>
+        <Button asChild variant="link" className="p-0">
+          <Link
+            href="/shifts"
+            className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+          >
+            View all
+          </Link>
+        </Button>
       </header>
       <div className="mb-3 flex flex-col gap-3">
         {shifts.map((shift) => {
